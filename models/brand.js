@@ -22,19 +22,19 @@ brandSchema.virtual("id").get(function () {
 brandSchema.set("toJSON", {
   virtuals: true,
 });
-brandSchema.post('save', function(doc) {    
-  if (doc.logo) {                
-      const imgUrl = `${process.env.BASE_URL}/brands/${doc.logo}`;        
-      doc.logo = imgUrl;
-  }
-});
+// brandSchema.post('save', function(doc) {    
+//   if (doc.logo) {                
+//       const imgUrl = `${process.env.BASE_URL}/brands/${doc.logo}`;        
+//       doc.logo = imgUrl;
+//   }
+// });
 
-// findOne , findAll , Update
-brandSchema.post('init', function(doc) {
-  if (doc.logo) {
-      const imgUrl = `${process.env.BASE_URL}/brands/${doc.logo}`;
-      doc.logo = imgUrl;
-  }
-});
+// // findOne , findAll , Update
+// brandSchema.post('init', function(doc) {
+//   if (doc.logo) {
+//       const imgUrl = `${process.env.BASE_URL}/brands/${doc.logo}`;
+//       doc.logo = imgUrl;
+//   }
+// });
 
 exports.Brand = mongoose.model("Brand", brandSchema);

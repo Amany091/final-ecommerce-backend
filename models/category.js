@@ -23,21 +23,21 @@ categorySchema.set("toJSON", {
   virtuals: true,
 });
 
-categorySchema.post('save', function(doc) {    
-  if (doc.image) {                
-      const imgUrl = `${process.env.BASE_URL}/categories/${doc.image}`;        
-      doc.image = imgUrl;
-  }
-});
+// categorySchema.post('save', function(doc) {    
+//   if (doc.image) {                
+//       const imgUrl = `${process.env.BASE_URL}/categories/${doc.image}`;        
+//       doc.image = imgUrl;
+//   }
+// });
 
-// findOne , findAll , Update
-categorySchema.post('init', function(doc) {
-  if (doc.image) {
-      const imgUrl = `${process.env.BASE_URL}/categories/${doc.image}`;
-      doc.image = imgUrl;
-  }
+// // findOne , findAll , Update
+// categorySchema.post('init', function(doc) {
+//   if (doc.image) {
+//       const imgUrl = `${process.env.BASE_URL}/categories/${doc.image}`;
+//       doc.image = imgUrl;
+//   }
   
-});
+// });
 
 
 exports.Category = mongoose.model("Category", categorySchema);
