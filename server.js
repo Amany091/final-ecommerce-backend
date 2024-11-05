@@ -5,6 +5,8 @@ const express = require("express")
 const morgan = require("morgan")
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
+const passport = require("passport")
+const session = require("express-session")
 
 const ApiError = require("./utils/ApiError")
 const userRoutes = require("./routes/user")
@@ -14,21 +16,39 @@ const authRoutes = require("./routes/authRoute")
 const productsRoutes = require("./routes/productRoute")
 const ordersRoutes = require("./routes/orderRoute");
 const { DBConnection } = require('./configs/DB');
+require("./configs/passport")(passport)
 // const { seedToDataBase } = require("./utils/seeding");
 const app = express()
+
+app.use(session({
+    secret: "cat",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: false, 
+        httpOnly: true,
+      },
+}))
+
+// passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
+
 DBConnection()
+app.use(
+    cors({
+        origin: [process.env.CLIENT_URL],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+        credentials: true,
+    })
+);
+
 // Middleware
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan("dev"))
     console.log(`mode : ${process.env.NODE_ENV}`)
 }
-app.use(
-	cors({
-		origin: ['http://localhost:5173'],
-		methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-		credentials: true,
-	})
-);
+
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(cookieParser())

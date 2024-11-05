@@ -51,3 +51,5 @@ exports.getCurrentUserCtrl= asyncWrapper(async (req, res) => {
     if (!user) return res.status(404).json({ success: false, error: "user not found." })
     await res.status(200).json({ success: true, data: user });
 })
+
+// export

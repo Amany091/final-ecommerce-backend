@@ -4,7 +4,8 @@ const ApiError = require("../utils/ApiError");
 const asyncWrapper = require("../utils/asyncWrapper");
 
 // upload single image
-exports.uploadUserImg = uploadSingleImg("profileImg","users","user");
+exports.uploadUserImg = uploadSingleImg("profileImg", "users", "user");
+
 exports.createUser = asyncWrapper(async (req, res) => {
   if(req.file){
     req.body.profileImg = req.file.filename
