@@ -1,14 +1,13 @@
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const Client = require("../models/client")
-const passport = require("passport")
 
 module.exports = function (passport) {
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:5000/api/v1/auth/google/callback",
+        callbackURL: `${process.env.BASE_URL}/api/v1/auth/google/callback`,
     },
-        async (accessToken, refreshToken, profile, done) => { 
+        async (profile, done) => {
             const newUser = {
                 userId: profile.id,
                 displayName: profile.displayName,
@@ -30,12 +29,12 @@ module.exports = function (passport) {
             }
         }
     ))
-    passport.serializeUser((user, done) => { 
+    passport.serializeUser((user, done) => {
         done(null, user);
     })
-    
-    passport.deserializeUser((id, done) => { 
-        Client.findById(id, (err, user) => { 
+
+    passport.deserializeUser((id, done) => {
+        Client.findById(id, (err, user) => {
             done(err, user);
         })
     })

@@ -17,7 +17,7 @@ const productsRoutes = require("./routes/productRoute")
 const ordersRoutes = require("./routes/orderRoute");
 const { DBConnection } = require('./configs/DB');
 require("./configs/passport")(passport)
-// const { seedToDataBase } = require("./utils/seeding");
+
 const app = express()
 
 app.use(session({
@@ -25,9 +25,9 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: {
-        secure: false, 
+        secure: false,
         httpOnly: true,
-      },
+    },
 }))
 
 // passport middleware
@@ -39,7 +39,7 @@ app.use(
     cors({
         origin: [process.env.CLIENT_URL],
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-        credentials: true,
+        credentials: true,
     })
 );
 
@@ -49,10 +49,17 @@ if (process.env.NODE_ENV === 'development') {
     console.log(`mode : ${process.env.NODE_ENV}`)
 }
 
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "../final-ecommerce/dist")));
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, "final-ecommerce", "dist", "index.html"));
+    })
+}
+
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname,"uploads")))
+app.use(express.static(path.join(__dirname, "uploads")))
 // Mount Routes
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/users', userRoutes)
@@ -62,11 +69,11 @@ app.use(`/api/v1/products`, productsRoutes);
 app.use(`/api/v1/orders`, ordersRoutes);
 
 
-app.all("*", (req, res, next) => {
-    next(new ApiError(`cant't find this route ${req.originalUrl}`),404)
+app.all("*", (req, next) => {
+    next(new ApiError(`cant't find this route ${req.originalUrl}`), 404)
 })
 //Global Error Handling Middleware For Express
-app.use((err, req, res, next) => {
+app.use((err, res, next) => {
     err.statusCode = err.statusCode || 500
     err.status = err.status || 'Error'
     res.status(err.statusCode).json({
@@ -75,7 +82,7 @@ app.use((err, req, res, next) => {
         message: err.message,
     })
     next()
-    
+
 })
 
 const port = process.env.PORT || 5000
